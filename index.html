@@ -1,10 +1,758 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>My Portfolio</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ashu Kushwaha — Software Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #111118;
+    --bg3: #16161f;
+    --accent: #00d4aa;
+    --accent2: #0099ff;
+    --text: #e8e8f0;
+    --text2: #8888a8;
+    --border: rgba(255,255,255,0.07);
+    --card: rgba(255,255,255,0.03);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NOISE TEXTURE */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* GRID LINES */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,170,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,170,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 4rem;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 8rem 4rem 4rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-content { max-width: 800px; }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,212,170,0.08);
+    border: 1px solid rgba(0,212,170,0.2);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 0.78rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 8vw, 6rem);
+    line-height: 1.0;
+    letter-spacing: -3px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--text2);
+    margin: 1.5rem 0 2.5rem;
+    max-width: 520px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: #000;
+    padding: 0.85rem 2rem;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,212,170,0.3); }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.85rem 2rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--accent); background: rgba(0,212,170,0.05); }
+
+  /* STATS */
+  .stats-bar {
+    display: flex;
+    gap: 3rem;
+    padding: 2.5rem 4rem;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    position: relative;
+    z-index: 1;
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-label { font-size: 0.78rem; color: var(--text2); letter-spacing: 0.5px; }
+
+  /* SECTIONS */
+  section {
+    padding: 6rem 4rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-tag {
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 3rem;
+  }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .skill-card {
+    background: var(--card);
+    padding: 1.75rem;
+    transition: background 0.2s;
+  }
+  .skill-card:hover { background: rgba(0,212,170,0.04); }
+
+  .skill-icon {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .skill-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 0.75rem;
+  }
+
+  .stag {
+    font-size: 0.72rem;
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.05);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+
+  /* EXPERIENCE */
+  .exp-list { display: flex; flex-direction: column; gap: 0; }
+
+  .exp-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 3rem;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .exp-item:last-child { border-bottom: none; }
+
+  .exp-date {
+    font-size: 0.8rem;
+    color: var(--text2);
+    padding-top: 4px;
+    line-height: 1.6;
+  }
+
+  .exp-company {
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+  }
+
+  .exp-role {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .exp-bullets li {
+    font-size: 0.9rem;
+    color: var(--text2);
+    padding-left: 1.2rem;
+    position: relative;
+  }
+  .exp-bullets li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 0.8rem;
+  }
+
+  /* PROJECTS */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .proj-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .proj-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0);
+    transition: transform 0.3s;
+    transform-origin: left;
+  }
+  .proj-card:hover { border-color: rgba(0,212,170,0.2); transform: translateY(-4px); }
+  .proj-card:hover::before { transform: scaleX(1); }
+
+  .proj-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: rgba(255,255,255,0.04);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .proj-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
+  .proj-desc {
+    font-size: 0.88rem;
+    color: var(--text2);
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+  }
+
+  .proj-stack { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pstack {
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: rgba(0,212,170,0.08);
+    color: var(--accent);
+    border: 1px solid rgba(0,212,170,0.15);
+  }
+
+  /* CONTACT */
+  .contact-wrapper {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 4rem;
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .contact-wrapper h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 1rem;
+  }
+
+  .contact-wrapper p {
+    color: var(--text2);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .contact-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 1.5rem;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .contact-link:hover { border-color: var(--accent); background: rgba(0,212,170,0.05); color: var(--accent); }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.78rem;
+    color: var(--text2);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HERO GLOW */
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,212,170,0.08) 0%, transparent 70%);
+    top: 50%; right: 0;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { padding: 7rem 1.5rem 3rem; }
+    section { padding: 4rem 1.5rem; }
+    .stats-bar { padding: 2rem 1.5rem; gap: 1.5rem; flex-wrap: wrap; }
+    .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+    .contact-wrapper { padding: 2rem 1.5rem; }
+  }
+</style>
 </head>
 <body>
-  <h1>Hello Ashutosh 👋</h1>
-  <p>This is my portfolio website</p>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">AK.</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="about">
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Available for opportunities</div>
+    <h1>Ashu<br><span>Kushwaha</span></h1>
+    <p class="hero-sub">Software Developer with 3+ years building scalable enterprise applications, travel-tech platforms, and secure payment systems using .NET Core, C#, and React.</p>
+    <div class="hero-cta">
+      <a href="#contact" class="btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .84h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        Get in touch
+      </a>
+      <a href="#projects" class="btn-outline">
+        View projects →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">3.5+</div><div class="stat-label">Years Experience</div></div>
+  <div class="stat"><div class="stat-num">4+</div><div class="stat-label">Production Apps</div></div>
+  <div class="stat"><div class="stat-num">80%</div><div class="stat-label">Payroll Time Saved</div></div>
+  <div class="stat"><div class="stat-num">40%</div><div class="stat-label">API Speed Gained</div></div>
+  <div class="stat"><div class="stat-num">99.9%</div><div class="stat-label">System Uptime</div></div>
+</div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-tag">What I work with</div>
+  <h2 class="section-title">Technical Stack</h2>
+  <div class="skills-grid">
+    <div class="skill-card fade-in">
+      <div class="skill-icon" style="background:rgba(0,212,170,0.1);">⚙️</div>
+      <h3>Backend</h3>
+      <p style="font-size:0.85rem;color:var(--text2)">Core expertise in server-side development</p>
+      <div class="skill-tags">
+        <span class="stag">.NET Core</span>
+        <span class="stag">ASP.NET MVC</span>
+        <span class="stag">C#</span>
+        <span class="stag">Web API</span>
+        <span class="stag">Entity Framework</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in">
+      <div class="skill-icon" style="background:rgba(0,153,255,0.1);">🎨</div>
+      <h3>Frontend</h3>
+      <p style="font-size:0.85rem;color:var(--text2)">Building responsive, accessible UIs</p>
+      <div class="skill-tags">
+        <span class="stag">React</span>
+        <span class="stag">Angular</span>
+        <span class="stag">JavaScript</span>
+        <span class="stag">jQuery</span>
+        <span class="stag">HTML5 / CSS3</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in">
+      <div class="skill-icon" style="background:rgba(255,170,0,0.1);">🗄️</div>
+      <h3>Databases</h3>
+      <p style="font-size:0.85rem;color:var(--text2)">Relational and NoSQL data solutions</p>
+      <div class="skill-tags">
+        <span class="stag">SQL Server</span>
+        <span class="stag">MongoDB</span>
+        <span class="stag">Query Optimization</span>
+        <span class="stag">Stored Procedures</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in">
+      <div class="skill-icon" style="background:rgba(100,100,255,0.1);">☁️</div>
+      <h3>Cloud & DevOps</h3>
+      <p style="font-size:0.85rem;color:var(--text2)">Azure-first deployment pipelines</p>
+      <div class="skill-tags">
+        <span class="stag">Microsoft Azure</span>
+        <span class="stag">Azure DevOps</span>
+        <span class="stag">GitHub Actions</span>
+        <span class="stag">CI/CD</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in">
+      <div class="skill-icon" style="background:rgba(0,212,170,0.1);">🔗</div>
+      <h3>Integration</h3>
+      <p style="font-size:0.85rem;color:var(--text2)">APIs, payments, and third-party systems</p>
+      <div class="skill-tags">
+        <span class="stag">REST API</span>
+        <span class="stag">Travel APIs</span>
+        <span class="stag">Payment Gateways</span>
+        <span class="stag">Postman</span>
+      </div>
+    </div>
+    <div class="skill-card fade-in">
+      <div class="skill-icon" style="background:rgba(255,100,100,0.1);">📐</div>
+      <h3>Architecture</h3>
+      <p style="font-size:0.85rem;color:var(--text2)">Clean, scalable system design</p>
+      <div class="skill-tags">
+        <span class="stag">SOLID Principles</span>
+        <span class="stag">Clean Architecture</span>
+        <span class="stag">MVC Pattern</span>
+        <span class="stag">Agile / Scrum</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" style="background:var(--bg2);">
+  <div class="section-tag">Where I've worked</div>
+  <h2 class="section-title">Experience</h2>
+  <div class="exp-list">
+    <div class="exp-item fade-in">
+      <div class="exp-date">
+        Aug 2025 — Present<br>
+        <span style="color:rgba(255,255,255,0.3);font-size:0.72rem;">Ghaziabad, UP</span>
+      </div>
+      <div>
+        <div class="exp-company">Flightsmojo Booking Pvt. Ltd.</div>
+        <div class="exp-role">Software Developer</div>
+        <ul class="exp-bullets">
+          <li>Architected flight search, booking, and e-ticketing modules handling high-concurrency traffic</li>
+          <li>Integrated third-party travel APIs for real-time pricing, seat availability, and fare rules</li>
+          <li>Built secure, PCI-DSS compliant payment gateway integrations</li>
+          <li>Reduced API response time by 40% through query optimization and async processing</li>
+          <li>Maintained 99.9% uptime via Azure DevOps CI/CD pipelines and proactive monitoring</li>
+          <li>Utilized MongoDB for storing unstructured flight and pricing data</li>
+        </ul>
+      </div>
+    </div>
+    <div class="exp-item fade-in">
+      <div class="exp-date">
+        Dec 2022 — Aug 2025<br>
+        <span style="color:rgba(255,255,255,0.3);font-size:0.72rem;">2 yrs 9 months</span>
+      </div>
+      <div>
+        <div class="exp-company">Carantoc Software Solution Pvt. Ltd.</div>
+        <div class="exp-role">Software Developer</div>
+        <ul class="exp-bullets">
+          <li>Developed 3 production-grade enterprise applications from design to deployment</li>
+          <li>Designed and documented RESTful APIs for seamless third-party integrations</li>
+          <li>Automated payroll processing, cutting processing time by 80%</li>
+          <li>Built responsive UIs using Angular and jQuery, improving mobile usability</li>
+          <li>Collaborated in Agile sprints with 90%+ test coverage on critical modules</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-tag">What I've built</div>
+  <h2 class="section-title">Key Projects</h2>
+  <div class="projects-grid">
+
+    <div class="proj-card fade-in">
+      <div class="proj-num">01</div>
+      <div class="proj-title">Flightsmojo — Flight Booking Platform</div>
+      <p class="proj-desc">End-to-end flight search, booking, and e-ticketing platform. Integrated multiple travel APIs for real-time pricing, built secure payment modules, and achieved 40% API speed improvement with 99.9% uptime.</p>
+      <div class="proj-stack">
+        <span class="pstack">.NET Core</span>
+        <span class="pstack">C#</span>
+        <span class="pstack">MongoDB</span>
+        <span class="pstack">SQL Server</span>
+        <span class="pstack">Azure</span>
+        <span class="pstack">REST API</span>
+      </div>
+    </div>
+
+    <div class="proj-card fade-in">
+      <div class="proj-num">02</div>
+      <div class="proj-title">Time & Attendance System</div>
+      <p class="proj-desc">Enterprise payroll automation platform that reduced processing time by 80%. Features background job scheduling for auto-payroll computation, real-time attendance tracking, and reporting dashboards.</p>
+      <div class="proj-stack">
+        <span class="pstack">.NET Core</span>
+        <span class="pstack">SQL Server</span>
+        <span class="pstack">REST API</span>
+        <span class="pstack">Background Jobs</span>
+      </div>
+    </div>
+
+    <div class="proj-card fade-in">
+      <div class="proj-num">03</div>
+      <div class="proj-title">OrderAtTable</div>
+      <p class="proj-desc">QR-based restaurant digital ordering and payment system. Enabled contactless ordering workflow, integrated payment gateway, and provided real-time order status to kitchen — improving table turnover by 30%.</p>
+      <div class="proj-stack">
+        <span class="pstack">ASP.NET MVC</span>
+        <span class="pstack">Angular</span>
+        <span class="pstack">SQL Server</span>
+        <span class="pstack">Payment Gateway</span>
+      </div>
+    </div>
+
+    <div class="proj-card fade-in">
+      <div class="proj-num">04</div>
+      <div class="proj-title">Banktech</div>
+      <p class="proj-desc">Secure payment processing system with multi-layer transaction validation, fraud detection hooks, and audit logging. Ensured ACID compliance handling 10,000+ daily transactions reliably.</p>
+      <div class="proj-stack">
+        <span class="pstack">.NET Core</span>
+        <span class="pstack">C#</span>
+        <span class="pstack">SQL Server</span>
+        <span class="pstack">Security</span>
+      </div>
+    </div>
+
+    <div class="proj-card fade-in">
+      <div class="proj-num">05</div>
+      <div class="proj-title">Customer Care Platform</div>
+      <p class="proj-desc">Centralized customer support system with ticket management, SLA tracking, and escalation workflows. Improved average issue resolution time by 45% through intelligent routing and automation.</p>
+      <div class="proj-stack">
+        <span class="pstack">ASP.NET MVC</span>
+        <span class="pstack">jQuery</span>
+        <span class="pstack">SQL Server</span>
+        <span class="pstack">Automation</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-wrapper fade-in">
+    <h2>Let's work<br><span style="background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">together</span></h2>
+    <p>Open to full-time roles, contract work, and exciting projects. Drop a message — I reply fast.</p>
+    <div class="contact-links">
+      <a href="tel:+919792654545" class="contact-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .84h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        +91 97926 54545
+      </a>
+      <a href="mailto:ashushwaha678@gmail.com" class="contact-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        ashushwaha678@gmail.com
+      </a>
+      <a href="https://linkedin.com/in/ashukushwaha" target="_blank" class="contact-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+        LinkedIn
+      </a>
+      <a href="https://github.com/ashukushwaha" target="_blank" class="contact-link">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Designed & built with ♥ — Ashu Kushwaha &copy; 2025</p>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
